@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kroger Value Realization · Experis</title>
+<style>
+  :root{
+    --ink:#14152B; --ink2:#23253B; --blue:#1100FF; --blue-soft:#EEF0FB;
+    --green:#3FA34D; --green-soft:#E6F3E8; --kroger:#00549F;
+    --bg:#0E0F1E; --canvas:#FFFFFF; --muted:#6B6E7F; --line:#E6E8F2;
+    --shadow:0 24px 60px rgba(8,9,25,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+    background:radial-gradient(120% 120% at 80% -10%,#1b1d3a 0%,var(--bg) 55%);
+    color:var(--ink); height:100vh; overflow:hidden; display:flex; flex-direction:column;
+  }
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;
+    padding:14px 26px;flex:0 0 auto;border-bottom:1px solid rgba(255,255,255,.07)}
+  .topbar .brand{display:flex;align-items:center;gap:14px}
+  .topbar .brand img{height:30px;display:block}
+  .topbar .brand .chip{background:#fff;border-radius:8px;padding:6px 10px;display:flex;align-items:center}
+  .topbar .ttl{color:#fff;font-size:14px;font-weight:600;letter-spacing:.2px}
+  .topbar .ttl span{color:#8e90c9;font-weight:400}
+  .topbar .right{display:flex;align-items:center;gap:16px}
+  .topbar .right .chip img{height:24px}
+  /* ---------- layout ---------- */
+  .layout{flex:1 1 auto;display:flex;min-height:0;padding:18px 22px 16px;gap:18px}
+  /* index */
+  .index{flex:0 0 250px;color:#cfd0e8;overflow-y:auto;padding-right:4px}
+  .index h4{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#6f72a6;margin:6px 8px 12px}
+  .nav-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;
+    cursor:pointer;font-size:13.5px;line-height:1.25;color:#b9bbdd;transition:.18s;border:1px solid transparent}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+  .nav-item.active{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(124,116,255,.4)}
+  .nav-item .num{flex:0 0 24px;height:24px;border-radius:7px;background:rgba(255,255,255,.08);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9b9ed4}
+  .nav-item.active .num{background:var(--blue);color:#fff}
+  /* stage */
+  .stage-wrap{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+  .stage{flex:1 1 auto;background:var(--canvas);border-radius:18px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;padding:46px 56px;opacity:0;transform:translateY(14px);
+    pointer-events:none;transition:opacity .4s ease,transform .4s ease;overflow-y:auto}
+  .slide.active{opacity:1;transform:none;pointer-events:auto}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:1.2px;
+    text-transform:uppercase;color:var(--blue);background:var(--blue-soft);padding:6px 12px;border-radius:20px}
+  .slide h1{font-size:38px;line-height:1.08;margin:18px 0 10px;color:var(--ink);letter-spacing:-.5px}
+  .slide h2{font-size:27px;line-height:1.12;margin:14px 0 6px;color:var(--ink);letter-spacing:-.3px}
+  .slide p.lead{font-size:16px;color:var(--muted);max-width:760px;line-height:1.55}
+  .accent-line{width:60px;height:4px;background:var(--green);border-radius:3px;margin:14px 0 22px}
+  /* metric strip */
+  .metrics{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+  .metric{flex:1 1 160px;background:var(--blue-soft);border-radius:14px;padding:22px 20px;min-width:150px}
+  .metric .big{font-size:34px;font-weight:800;color:var(--blue);line-height:1}
+  .metric .lbl{font-size:13px;color:var(--ink2);margin-top:8px;font-weight:600}
+  .metric .sub{font-size:11.5px;color:var(--muted);margin-top:3px}
+  /* cards grid */
+  .grid{display:grid;gap:18px;margin-top:24px}
+  .grid.c2{grid-template-columns:1fr 1fr}
+  .grid.c3{grid-template-columns:repeat(3,1fr)}
+  .grid.c4{grid-template-columns:repeat(4,1fr)}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 22px;
+    position:relative;transition:.18s}
+  .card:hover{box-shadow:0 12px 30px rgba(17,0,255,.08);transform:translateY(-2px);border-color:#cdd0ee}
+  .card .ic{width:42px;height:42px;border-radius:11px;background:var(--blue-soft);display:flex;
+    align-items:center;justify-content:center;margin-bottom:14px}
+  .card .ic img{width:24px;height:24px}
+  .card h3{font-size:16.5px;color:var(--ink);margin-bottom:7px}
+  .card .v{font-size:22px;font-weight:800;color:var(--green);margin-bottom:6px}
+  .card p{font-size:13px;color:var(--muted);line-height:1.5}
+  .tag{display:inline-block;font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-soft);
+    padding:3px 9px;border-radius:6px;margin-bottom:10px}
+  /* split */
+  .split{display:grid;grid-template-columns:1.05fr .95fr;gap:34px;align-items:start;margin-top:18px}
+  ul.clean{list-style:none;margin-top:10px}
+  ul.clean li{position:relative;padding:9px 0 9px 30px;font-size:14.5px;color:var(--ink2);
+    border-bottom:1px dashed var(--line);line-height:1.45}
+  ul.clean li:before{content:"";position:absolute;left:4px;top:15px;width:9px;height:9px;border-radius:50%;
+    background:var(--green)}
+  /* big callout */
+  .callout{margin-top:26px;background:linear-gradient(100deg,var(--blue),#4a2bff);border-radius:16px;
+    padding:26px 30px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .callout .t{font-size:18px;font-weight:700}
+  .callout .t span{display:block;font-size:13px;font-weight:400;color:#d7d8f6;margin-top:4px}
+  .callout .n{font-size:40px;font-weight:800;white-space:nowrap}
+  /* bar chart */
+  .chart{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:24px 26px}
+  .bars{display:flex;align-items:flex-end;gap:10px;height:230px;margin-top:8px}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bar .fill{width:100%;max-width:46px;background:linear-gradient(180deg,#4a2bff,var(--blue));
+    border-radius:6px 6px 0 0;position:relative;transition:height .6s ease}
+  .bar.peak .fill{background:linear-gradient(180deg,#56c06a,var(--green))}
+  .bar .amt{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:6px}
+  .bar .day{font-size:10.5px;color:var(--muted);margin-top:8px}
+  /* timeline stepper */
+  .timeline{margin-top:26px}
+  .tl-track{display:flex;gap:0;position:relative}
+  .tl-step{flex:1;text-align:center;position:relative;padding-top:34px;cursor:default}
+  .tl-step:before{content:"";position:absolute;top:13px;left:0;right:0;height:3px;background:var(--line)}
+  .tl-step:first-child:before{left:50%}
+  .tl-step:last-child:before{right:50%}
+  .tl-step .dot{position:absolute;top:5px;left:50%;transform:translateX(-50%);width:18px;height:18px;
+    border-radius:50%;background:#fff;border:3px solid var(--blue);z-index:2}
+  .tl-step.go .dot{background:var(--green);border-color:var(--green)}
+  .tl-step .ph{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:4px}
+  .tl-step .ds{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.3;padding:0 4px}
+  .steps-detail{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 26px;margin-top:26px}
+  .steps-detail .s{font-size:13px;color:var(--ink2);padding:6px 0;border-bottom:1px dashed var(--line)}
+  .steps-detail .s b{color:var(--blue)}
+  /* workstreams */
+  .ws-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  .ws{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;
+    align-items:center;gap:14px;transition:.18s}
+  .ws:hover{border-color:var(--blue);box-shadow:0 8px 20px rgba(17,0,255,.07)}
+  .ws .no{font-size:13px;font-weight:800;color:#fff;background:var(--ink);width:30px;height:30px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;flex:0 0 30px}
+  .ws span{font-size:13.5px;font-weight:600;color:var(--ink2)}
+  /* cover */
+  .cover{display:flex;flex-direction:column;justify-content:center;height:100%;padding:0 8px}
+  .cover .eye{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-weight:700}
+  .cover h1{font-size:60px;line-height:1.02;margin:18px 0;letter-spacing:-1.5px}
+  .cover h1 .g{color:var(--blue)}
+  .cover p{font-size:17px;color:var(--muted);max-width:620px;line-height:1.55}
+  .cover .cta{margin-top:34px;display:flex;gap:14px;align-items:center}
+  /* downloads */
+  .dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+  .dl{display:block;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:24px 22px;transition:.18s;color:inherit}
+  .dl:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(17,0,255,.1);border-color:var(--blue)}
+  .dl .ft{font-size:11px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--blue);
+    padding:4px 9px;border-radius:6px;display:inline-block}
+  .dl.x .ft{background:var(--green)}
+  .dl.p .ft{background:var(--kroger)}
+  .dl h3{font-size:16px;margin:16px 0 6px}
+  .dl p{font-size:12.5px;color:var(--muted);line-height:1.45}
+  .dl .go{margin-top:14px;font-size:13px;font-weight:700;color:var(--blue)}
+  .contacts{display:flex;gap:34px;margin-top:30px;flex-wrap:wrap}
+  .contact{display:flex;flex-direction:column}
+  .contact .nm{font-size:15px;font-weight:700;color:var(--ink)}
+  .contact .ro{font-size:12.5px;color:var(--muted);margin:2px 0 1px}
+  .contact .em{font-size:12.5px;color:var(--blue);font-weight:600}
+  /* footer / stepper */
+  .stepper{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    margin-top:14px;color:#cfd0e8}
+  .dots{display:flex;gap:8px;align-items:center}
+  .dots .d{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer;transition:.2s}
+  .dots .d.on{background:var(--blue);width:26px;border-radius:5px}
+  .btns{display:flex;gap:10px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;cursor:pointer;
+    border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:#fff;
+    padding:9px 18px;border-radius:10px;transition:.18s}
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn.primary{background:var(--blue);border-color:var(--blue)}
+  .btn.primary:hover{background:#3a2bff}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .pageno{font-size:12.5px;color:#8a8db8;min-width:60px;text-align:center}
+  /* scrollbars */
+  .index::-webkit-scrollbar,.slide::-webkit-scrollbar{width:8px}
+  .index::-webkit-scrollbar-thumb,.slide::-webkit-scrollbar-thumb{background:rgba(140,140,180,.4);border-radius:4px}
+  @media(max-width:980px){
+    .index{display:none}.slide{padding:30px 26px}.cover h1{font-size:40px}
+    .grid.c3,.grid.c4,.ws-grid,.dl-grid{grid-template-columns:1fr 1fr}
+    .split,.steps-detail{grid-template-columns:1fr}.callout{flex-direction:column;align-items:flex-start}
+    .tl-track{flex-wrap:wrap;gap:14px}.tl-step{flex:1 1 40%}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="chip"><img src="assets/experis-logo.svg" alt="Experis"></span>
+    <span class="ttl">Kroger Value Realization <span>· Cost Savings Plan</span></span>
+  </div>
+  <div class="right">
+    <span class="chip"><img src="assets/kroger-logo.svg" alt="Kroger"></span>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="index" id="index">
+    <h4>Sections</h4>
+  </nav>
+
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+
+      <!-- 0 COVER -->
+      <section class="slide" data-title="Welcome">
+        <div class="cover">
+          <div class="eye">Experis &nbsp;·&nbsp; Prepared for Kroger</div>
+          <h1>Kroger <span class="g">Value<br>Realization</span></h1>
+          <p>A trusted IT resourcing and services partner for 10+ years. This plan shows how Experis delivers meaningful, near-term cost savings — while protecting delivery continuity and talent.</p>
+          <div class="cta">
+            <button class="btn primary" onclick="go(1)">Explore the plan &nbsp;→</button>
+            <button class="btn" onclick="go(10)">Jump to downloads</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1 EXEC SUMMARY -->
+      <section class="slide" data-title="Executive Summary">
+        <span class="kicker">Executive Summary</span>
+        <h1>The opportunity at a glance</h1>
+        <div class="accent-line"></div>
+        <div class="grid c2">
+          <div class="card"><span class="tag">Partnership</span><h3>10+ year trusted partner</h3><p>Over 1,000 consultants placed and 200+ converted to Kroger employees — a critical partner in Kroger's IT talent ecosystem.</p></div>
+          <div class="card"><span class="tag">Baseline</span><h3>$20.3M 2026 run rate</h3><p>Down 37% year-over-year, reflecting a disciplined, value-focused partnership.</p></div>
+          <div class="card"><span class="tag">Lever</span><h3 style="color:var(--green)">$2.3M · Bill Rate Savings</h3><p>A 10% bill rate adjustment delivering estimated incremental savings.</p></div>
+          <div class="card"><span class="tag">Lever</span><h3 style="color:var(--green)">$6–12M · Vendor Streamlining</h3><p>Consolidating vendor spend to Experis could deliver substantial annualized savings, plus $1M from AI &amp; automation.</p></div>
+        </div>
+      </section>
+
+      <!-- 2 PARTNERSHIP -->
+      <section class="slide" data-title="Partnership at a Glance">
+        <span class="kicker">Baseline</span>
+        <h1>Experis + Kroger partnership</h1>
+        <div class="accent-line"></div>
+        <div class="metrics">
+          <div class="metric"><div class="big">$32.3M</div><div class="lbl">2025 Spend</div></div>
+          <div class="metric"><div class="big">$20.3M</div><div class="lbl">2026 Run Rate</div></div>
+          <div class="metric"><div class="big">$12M</div><div class="lbl">YoY Reduction</div><div class="sub">37% decrease</div></div>
+        </div>
+        <div class="grid c3" style="margin-top:24px">
+          <div class="card"><div class="v">10 yrs</div><p>A decade-long relationship built on trust and delivery.</p></div>
+          <div class="card"><div class="v">950+</div><p>Consultants deployed; 200+ placed or converted to Kroger employees.</p></div>
+          <div class="card"><div class="v">60+</div><p>Projects delivered across Kroger's IT landscape.</p></div>
+        </div>
+      </section>
+
+      <!-- 3 CONCEPTS -->
+      <section class="slide" data-title="Value Realization Concepts">
+        <span class="kicker">How we accelerate your success</span>
+        <h1>Four levers of value realization</h1>
+        <div class="accent-line"></div>
+        <div class="grid c4">
+          <div class="card"><div class="ic"><img src="assets/icon-trend.svg"></div><h3>Cost Efficiency</h3><div class="v">10% Bill Rate</div><p>Bill rate adjustment plus holiday furlough savings.</p></div>
+          <div class="card"><div class="ic"><img src="assets/icon-org.svg"></div><h3>Vendor Streamlining</h3><div class="v">$7–13M</div><p>Consolidate vendor spend to Experis, annualized.</p></div>
+          <div class="card"><div class="ic"><img src="assets/icon-ai.svg"></div><h3>AI &amp; Automation</h3><div class="v">$1M</div><p>Automation and AI-enabled delivery efficiencies.</p></div>
+          <div class="card"><div class="ic"><img src="assets/icon-growth.svg"></div><h3>Steady State</h3><div class="v">Rate Card</div><p>Standardized process &amp; pricing for ongoing savings.</p></div>
+        </div>
+        <div class="callout"><div class="t">From today to future state<span>Standardize process &amp; pricing across IT Resourcing ($7.1M) and SOW ($13.3M)</span></div></div>
+      </section>
+
+      <!-- 4 COST EFFICIENCY -->
+      <section class="slide" data-title="Cost Efficiency Plan">
+        <span class="kicker">2026 Savings Plan</span>
+        <h1>Cost Efficiency</h1>
+        <div class="accent-line"></div>
+        <div class="split">
+          <div>
+            <div class="card" style="margin-bottom:16px"><span class="tag">Lever 1</span><h3>10% Bill Rate Adjustment</h3><div class="v">$1.3M fiscal · $2.2M annualized</div><p>Effective July 26, 2026 across the IT resourcing book.</p></div>
+            <div class="card"><span class="tag">Lever 2</span><h3>Holiday Furlough — 10 days</h3><div class="v">$0.8M fiscal 2026</div><p>Ten furlough days aligned to 2026 holiday periods.</p></div>
+          </div>
+          <div>
+            <div class="metric" style="background:var(--green-soft)"><div class="big" style="color:var(--green)">$2.1M</div><div class="lbl">Total Kroger Fiscal 2026 savings</div></div>
+            <div class="metric" style="margin-top:16px"><div class="big">$3.1M</div><div class="lbl">Annualized savings</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 AI -->
+      <section class="slide" data-title="AI & Automation">
+        <span class="kicker">Innovation</span>
+        <h1>AI &amp; Automation</h1>
+        <div class="accent-line"></div>
+        <div class="split">
+          <div>
+            <p class="lead">Applying AI and automation across delivery and operations to remove manual effort and accelerate outcomes — without adding cost.</p>
+            <ul class="clean">
+              <li>Automation of repetitive resourcing and reporting workflows</li>
+              <li>AI-assisted delivery to improve speed and quality</li>
+              <li>Continuous efficiency gains across the engagement</li>
+            </ul>
+          </div>
+          <div class="callout" style="margin-top:6px"><div class="t">Incremental savings<span>Through AI &amp; automation</span></div><div class="n">$1M</div></div>
+        </div>
+      </section>
+
+      <!-- 6 VENDOR STREAMLINING -->
+      <section class="slide" data-title="Vendor Streamlining">
+        <span class="kicker">Opportunity</span>
+        <h1>Vendor streamlining savings</h1>
+        <div class="accent-line"></div>
+        <p class="lead">Cumulative estimated savings to Kroger as vendor volume transitions to Experis over a phased schedule.</p>
+        <div class="chart">
+          <div class="bars" id="bars"></div>
+        </div>
+        <p style="font-size:11.5px;color:var(--muted);margin-top:12px">*Savings estimate assumes $85/hr average bill rate and current average mark-up factor of ~1.36. Days reflect transition milestones.</p>
+      </section>
+
+      <!-- 7 TRANSITION BEST PRACTICES -->
+      <section class="slide" data-title="Talent Transition">
+        <span class="kicker">Ensuring a smooth program change</span>
+        <h1>Talent transition best practices</h1>
+        <div class="accent-line"></div>
+        <div class="metrics" style="margin-bottom:8px">
+          <div class="metric"><div class="big">80%</div><div class="lbl">of implementations involve assignment transition</div></div>
+          <div class="metric"><div class="big">99%</div><div class="lbl">of contract workers remain on assignment when offered (if eligible)</div></div>
+          <div class="metric"><div class="big">1,000+</div><div class="lbl">workers transitioned in 2025/26 across 100+ clients</div></div>
+        </div>
+        <div class="split">
+          <ul class="clean">
+            <li>Follow American Staffing Association (ASA) guidelines</li>
+            <li>Provide a well-defined program and timeline</li>
+            <li>Coordinate communication and clear owners</li>
+            <li>Consistent message; limit disruption to production</li>
+          </ul>
+          <ul class="clean">
+            <li>Limits disruption to the workforce</li>
+            <li>Limits fears and co-employment issues</li>
+            <li>Reduces uncertainty</li>
+            <li>Provides options and a clear timeline</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 8 TIMELINE -->
+      <section class="slide" data-title="Transition Timeline">
+        <span class="kicker">Sample transition timeline</span>
+        <h1>A proven, phased path to Go Live</h1>
+        <div class="accent-line"></div>
+        <div class="timeline">
+          <div class="tl-track">
+            <div class="tl-step"><div class="dot"></div><div class="ph">Prepare</div><div class="ds">Define logistics, gather workers &amp; kick-off</div></div>
+            <div class="tl-step"><div class="dot"></div><div class="ph">Align &amp; Communicate</div><div class="ds">Notify incumbents &amp; workforce; info sessions</div></div>
+            <div class="tl-step"><div class="dot"></div><div class="ph">Onboarding</div><div class="ds">Decisions due; Experis onboarding sessions</div></div>
+            <div class="tl-step"><div class="dot"></div><div class="ph">Backfills</div><div class="ds">Backfill as needed; onboarding finalized</div></div>
+            <div class="tl-step"><div class="dot"></div><div class="ph">Set-Up</div><div class="ds">Orientations; back-office updates complete</div></div>
+            <div class="tl-step go"><div class="dot"></div><div class="ph">Go Live</div><div class="ds">Transition complete</div></div>
+          </div>
+        </div>
+        <div class="steps-detail">
+          <div class="s"><b>Step 1</b> — Kroger notifies incumbent(s)</div>
+          <div class="s"><b>Step 2</b> — Workforce notified by incumbent</div>
+          <div class="s"><b>Step 3</b> — Experis engages incumbent supplier</div>
+          <div class="s"><b>Step 4</b> — Incumbent data received from client</div>
+          <div class="s"><b>Step 5</b> — Experis hosts worker info sessions</div>
+          <div class="s"><b>Step 6</b> — Workers' decision due</div>
+          <div class="s"><b>Step 7</b> — Experis hosts onboarding sessions</div>
+          <div class="s"><b>Step 8</b> — Experis backfills as needed</div>
+          <div class="s"><b>Step 9</b> — New consultant orientations</div>
+          <div class="s"><b>Step 10</b> — Kroger set-up &amp; back-office updates</div>
+        </div>
+        <p style="font-size:11.5px;color:var(--muted);margin-top:16px">Sample schedule — finalized jointly with Kroger once logistics and details are defined.</p>
+      </section>
+
+      <!-- 9 WORKSTREAMS -->
+      <section class="slide" data-title="Implementation Workstreams">
+        <span class="kicker">Implementation expertise</span>
+        <h1>Nine proven workstreams</h1>
+        <div class="accent-line"></div>
+        <p class="lead">A structured, proven, and repeatable implementation framework — driven by plans and timelines, and led by a dedicated team of implementation professionals.</p>
+        <div class="ws-grid">
+          <div class="ws"><span class="no">01</span><span>Change Management</span></div>
+          <div class="ws"><span class="no">02</span><span>Discovery / Design</span></div>
+          <div class="ws"><span class="no">03</span><span>Assignment Transition</span></div>
+          <div class="ws"><span class="no">04</span><span>Program Management</span></div>
+          <div class="ws"><span class="no">05</span><span>Invoicing &amp; Settlement</span></div>
+          <div class="ws"><span class="no">06</span><span>Reporting &amp; Timekeeping</span></div>
+          <div class="ws"><span class="no">07</span><span>Training</span></div>
+          <div class="ws"><span class="no">08</span><span>Supplier Alignment</span></div>
+          <div class="ws"><span class="no">09</span><span>Governance</span></div>
+        </div>
+      </section>
+
+      <!-- 10 DOWNLOADS -->
+      <section class="slide" data-title="Downloads & Contacts">
+        <span class="kicker">Take it with you</span>
+        <h1>Documents &amp; next steps</h1>
+        <div class="accent-line"></div>
+        <div class="dl-grid">
+          <a class="dl p" href="downloads/Kroger-Experis-One-Pager.pdf" target="_blank" download>
+            <span class="ft">PDF</span><h3>Executive One-Pager</h3><p>A single-page summary of the savings plan and key figures.</p><div class="go">Download →</div>
+          </a>
+          <a class="dl" href="downloads/Kroger-Experis-Value-Realization-Deck.pdf" target="_blank" download>
+            <span class="ft">PDF</span><h3>Full Value Realization Deck</h3><p>The complete presentation in PDF format.</p><div class="go">Download →</div>
+          </a>
+          <a class="dl x" href="downloads/Kroger-Experis-Savings-Model.xlsx" target="_blank" download>
+            <span class="ft">XLSX</span><h3>Savings Model</h3><p>Lever-by-lever breakdown with the vendor streamlining schedule.</p><div class="go">Download →</div>
+          </a>
+        </div>
+        <div class="callout" style="margin-top:26px"><div class="t">Ready to realize the value?<span>Total identified opportunity — cost efficiency + AI + vendor streamlining, annualized</span></div><div class="n">Up to ~$16M+</div></div>
+        <div class="contacts">
+          <div class="contact"><span class="nm">Isaac Hagen</span><span class="ro">SVP, Consumer Vertical</span><a class="em" href="mailto:isaac.hagen@manpowergroup.com">isaac.hagen@manpowergroup.com</a></div>
+          <div class="contact"><span class="nm">Paige Beasley</span><span class="ro">Kroger Account Director</span><a class="em" href="mailto:paige.beasley@experis.com">paige.beasley@experis.com</a></div>
+        </div>
+      </section>
+
+    </div><!-- /stage -->
+
+    <div class="stepper">
+      <div class="dots" id="dots"></div>
+      <div class="btns">
+        <button class="btn" id="prev" onclick="go(cur-1)">← Prev</button>
+        <span class="pageno"><span id="pn">1</span> / <span id="tot">11</span></span>
+        <button class="btn primary" id="next" onclick="go(cur+1)">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length; let cur=0;
+  document.getElementById('tot').textContent=N;
+  // build index + dots
+  const idx=document.getElementById('index'), dots=document.getElementById('dots');
+  slides.forEach((s,i)=>{
+    const it=document.createElement('div'); it.className='nav-item';
+    it.innerHTML=`<span class="num">${i+1}</span><span>${s.dataset.title}</span>`;
+    it.onclick=()=>go(i); idx.appendChild(it);
+    const d=document.createElement('span'); d.className='d'; d.onclick=()=>go(i); dots.appendChild(d);
+  });
+  const navItems=[...idx.querySelectorAll('.nav-item')], dotEls=[...dots.children];
+  function go(i){
+    if(i<0||i>=N) return; cur=i;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    navItems.forEach((n,k)=>n.classList.toggle('active',k===i));
+    dotEls.forEach((d,k)=>d.classList.toggle('on',k===i));
+    document.getElementById('pn').textContent=i+1;
+    document.getElementById('prev').disabled=(i===0);
+    document.getElementById('next').disabled=(i===N-1);
+    slides[i].scrollTop=0;
+    if(i===6) drawBars();
+  }
+  // vendor streamlining bars
+  const sched=[[30,1.209],[60,2.418],[90,3.627],[120,4.836],[150,6.045],[180,7.254],[210,8.463],[240,9.672],[270,10.881],[310,12.493]];
+  let barsDrawn=false;
+  function drawBars(){
+    if(barsDrawn) return; barsDrawn=true;
+    const max=12.493, host=document.getElementById('bars');
+    sched.forEach(([d,v],i)=>{
+      const b=document.createElement('div'); b.className='bar'+(i===sched.length-1?' peak':'');
+      b.innerHTML=`<div class="amt">$${v.toFixed(1)}M</div><div class="fill" style="height:0"></div><div class="day">${d}d</div>`;
+      host.appendChild(b);
+      requestAnimationFrame(()=>{setTimeout(()=>{b.querySelector('.fill').style.height=(v/max*100)+'%';},60*i);});
+    });
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown') go(cur+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') go(cur-1);
+  });
+  go(0);
+</script>
+</body>
+</html>
