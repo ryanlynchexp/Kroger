@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Raw brand-source libraries (kept locally, not needed on the live site).
+# Web-optimized versions live in assets/brand/.
+Level 4 - Wallpapers/
+08 - Digital Display 2/
+06 - Colors and Gradients/
+01 - Brand Logo/
