@@ -26,6 +26,10 @@
   #bg video{width:100%;height:100%;object-fit:cover}
   #scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:radial-gradient(120% 90% at 70% 10%,rgba(26,20,48,.05),rgba(26,20,48,.45))}
+  /* fixed opaque backdrop for content slides — hides motion without moving */
+  #deck-bg{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .55s ease;
+    background:radial-gradient(120% 100% at 82% -12%,#3a2f6e 0%,#1d1838 52%,#13111f 100%)}
+  #deck-bg.show{opacity:1}
 
   /* ---------- password gate ---------- */
   .gate{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;
@@ -59,8 +63,7 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
   /* ---------- app ---------- */
-  .app{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column;
-    background:radial-gradient(120% 100% at 82% -12%,#3a2f6e 0%,#1d1838 52%,#13111f 100%);
+  .app{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column;background:transparent;
     transform:translateY(102%);opacity:0;transition:transform .95s cubic-bezier(.76,0,.24,1) .15s,opacity .6s ease .25s}
   .app--in{transform:none;opacity:1}
 
@@ -91,7 +94,7 @@
     background:#fff}
   .slide.active{opacity:1;transform:none;pointer-events:auto}
   /* hero slides reveal the living motion (reserved for special moments) */
-  .slide.hero{background:#171327;color:#fff}
+  .slide.hero{background:transparent;color:#fff}
   .slide.hero .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
   .slide.hero:before{content:"";position:absolute;inset:0;z-index:1;
     background:linear-gradient(105deg,rgba(20,14,46,.70) 0%,rgba(20,14,46,.34) 45%,rgba(20,14,46,.05) 78%)}
@@ -202,7 +205,7 @@
   .person{position:absolute;right:30px;bottom:0;height:86%;max-height:560px;pointer-events:none;filter:drop-shadow(0 20px 40px rgba(40,20,80,.25))}
 
   /* downloads */
-  .dl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
+  .dl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:6px}
   .dl{display:block;text-decoration:none;border-radius:14px;padding:22px 20px;transition:.18s;color:#fff;
     background:rgba(255,255,255,.12);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.28)}
   .dl:hover{transform:translateY(-3px);background:rgba(255,255,255,.2);box-shadow:0 16px 36px rgba(10,6,40,.4)}
@@ -222,6 +225,69 @@
   .pageno{font-size:12.5px;color:#cfc9ea;min-width:54px;text-align:center}
   .btn.sm{padding:9px 16px}.btn.sm:disabled{opacity:.35;cursor:not-allowed}
 
+  /* people-over-glass slides */
+  .peoplebg .person{right:0;z-index:0;height:94%;max-height:620px;filter:drop-shadow(0 18px 40px rgba(40,20,80,.22))}
+  .peoplebg .metrics,.peoplebg .grid,.peoplebg .split,.peoplebg .kicker,.peoplebg h1,.peoplebg .accent-line{position:relative;z-index:2}
+  .peoplebg .card,.peoplebg .metric{background:rgba(255,255,255,.62);backdrop-filter:blur(18px) saturate(150%);
+    -webkit-backdrop-filter:blur(18px) saturate(150%);border-color:rgba(255,255,255,.7)}
+
+  /* AI orb animation */
+  .ai-wrap{display:flex;align-items:center;justify-content:center}
+  .ai-orb{position:relative;width:340px;height:340px}
+  .ai-orb svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 6px rgba(115,107,222,.5));
+    animation:orbBreath 6.5s ease-in-out infinite}
+  @keyframes orbBreath{0%,100%{transform:scale(.95)}50%{transform:scale(1.05)}}
+  .ai-orb .ring{transform-box:fill-box;transform-origin:center;animation:spin linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .ai-orb .dot{transform-box:fill-box;transform-origin:center;animation:twinkle ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+  .ai-orb .core{transform-box:fill-box;transform-origin:center;animation:corePulse 3.2s ease-in-out infinite}
+  @keyframes corePulse{0%,100%{transform:scale(.82);opacity:.75}50%{transform:scale(1.12);opacity:1}}
+  .ai-orb .pwave{transform-box:fill-box;transform-origin:center;animation:pwave 3.2s ease-out infinite}
+  @keyframes pwave{0%{transform:scale(.4);opacity:.55}100%{transform:scale(1.5);opacity:0}}
+
+  /* workstreams redesign */
+  .ws-phases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+  .ws-col{display:flex;flex-direction:column;gap:10px}
+  .ws-col .phase{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.8px;
+    text-transform:uppercase;color:var(--violet);margin-bottom:2px}
+  .ws-col .phase .pn{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--violet),var(--blue2));
+    color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px}
+  .ws-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;transition:.18s;border-left:3px solid var(--violet-lt)}
+  .ws-card:hover{box-shadow:0 10px 24px rgba(92,75,185,.13);transform:translateY(-2px)}
+  .ws-card .wt{font-size:13.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .ws-card .wt .nn{font-size:10.5px;font-weight:800;color:var(--blue2)}
+  .ws-card .wd{font-size:11.5px;color:var(--gray);line-height:1.4;margin-top:4px}
+
+  /* contacts (fixed layout + WCAG) */
+  .contacts{display:flex;gap:16px;margin-top:26px;flex-wrap:wrap}
+  .contact{display:flex;flex-direction:column;gap:2px;background:rgba(16,12,34,.62);backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.18);border-radius:13px;padding:16px 20px;min-width:270px}
+  .contact .nm{font-size:15px;font-weight:700;color:#fff}
+  .contact .ro{font-size:12.5px;color:#d7d4f5}
+  .contact .em{font-size:12.5px;color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;margin-top:4px}
+  .contact .em:hover{color:#bcd4ff}
+
+  /* header action icons + documents dropdown */
+  .hdr-actions{display:flex;align-items:center;gap:8px;margin-right:4px;position:relative}
+  .hicon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;transition:.16s}
+  .hicon:hover{background:rgba(255,255,255,.22)}
+  .hicon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .docmenu{position:absolute;top:46px;right:0;width:300px;background:#1a1533;border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;padding:8px;box-shadow:0 24px 60px rgba(8,6,30,.6);opacity:0;transform:translateY(-8px);
+    pointer-events:none;transition:.2s;z-index:50}
+  .docmenu.open{opacity:1;transform:none;pointer-events:auto}
+  .docmenu a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;text-decoration:none;color:#fff;transition:.14s}
+  .docmenu a:hover{background:rgba(255,255,255,.09)}
+  .docmenu .ft{font-size:10px;font-weight:800;color:#fff;padding:3px 7px;border-radius:5px;flex:0 0 auto}
+  .docmenu .ft.pdf{background:#c0392b}.docmenu .ft.xls{background:#1e7e45}
+  .docmenu .dt{font-size:13px;font-weight:600;line-height:1.2}.docmenu .dd{font-size:11px;color:#b9b4d8;margin-top:1px}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1533;color:#fff;
+    padding:11px 20px;border-radius:10px;font-size:13px;box-shadow:0 14px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;
+    transition:.25s;z-index:60;border:1px solid rgba(255,255,255,.16)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
   .index::-webkit-scrollbar,.slide::-webkit-scrollbar{width:8px}
   .index::-webkit-scrollbar-thumb,.slide::-webkit-scrollbar-thumb{background:rgba(150,150,190,.45);border-radius:4px}
   @media(max-width:980px){
@@ -236,6 +302,7 @@
 <div id="bg"><video autoplay muted loop playsinline poster="assets/brand/glass-x-poster.jpg">
   <source src="assets/brand/glass-x.mp4" type="video/mp4"></video></div>
 <div id="scrim"></div>
+<div id="deck-bg"></div>
 
 <!-- PASSWORD GATE -->
 <div class="gate" id="gate">
@@ -257,7 +324,20 @@
       <img class="exp" src="assets/brand/exp-hor-white.svg" alt="Experis">
       <span class="ttl">Kroger Value Realization <span>· Cost Savings Plan</span></span>
     </div>
-    <span class="chip"><img src="assets/kroger-logo.svg" alt="Kroger"></span>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="hdr-actions">
+        <div class="hicon" id="shareBtn" title="Share link"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></div>
+        <div class="hicon" id="dlBtn" title="Download deck (PDF)"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></div>
+        <div class="hicon" id="docsBtn" title="Documents"><svg viewBox="0 0 24 24"><path d="M4 4h9l3 3h-12zM4 7h16v13H4z"/></svg></div>
+        <div class="docmenu" id="docmenu">
+          <a href="downloads/Kroger-Experis-Value-Realization-Deck.pdf" target="_blank" download><span class="ft pdf">PDF</span><span><span class="dt">Value Realization Deck</span><span class="dd">Static PDF copy of this deck</span></span></a>
+          <a href="downloads/Kroger-Experis-One-Pager.pdf" target="_blank" download><span class="ft pdf">PDF</span><span><span class="dt">Executive One-Pager</span><span class="dd">Single-page summary</span></span></a>
+          <a href="downloads/Kroger-Experis-Savings-Model.xlsx" target="_blank" download><span class="ft xls">XLS</span><span><span class="dt">Savings Model</span><span class="dd">Lever-by-lever breakdown</span></span></a>
+          <a href="downloads/Experis-IT-Services-RFI.xlsx" target="_blank" download><span class="ft xls">XLS</span><span><span class="dt">IT Services RFI</span><span class="dd">Experis RFI response workbook</span></span></a>
+        </div>
+      </div>
+      <span class="chip"><img src="assets/kroger-logo.svg" alt="Kroger"></span>
+    </div>
   </div>
 
   <div class="layout">
@@ -267,7 +347,6 @@
 
         <!-- 0 COVER (hero) -->
         <section class="slide hero" data-title="Welcome">
-          <video class="hero-bg" autoplay muted loop playsinline poster="assets/brand/glass-x-poster.jpg"><source src="assets/brand/glass-x.mp4" type="video/mp4"></video>
           <div class="cover">
             <div class="eye">Experis · Prepared for Kroger</div>
             <h1>Kroger<span class="l2">Value Realization</span></h1>
@@ -310,7 +389,7 @@
         </section>
 
         <!-- 2 PARTNERSHIP (people) -->
-        <section class="slide" data-title="Partnership at a Glance">
+        <section class="slide peoplebg" data-title="Partnership at a Glance">
           <span class="kicker">Baseline</span>
           <h1>Experis + Kroger partnership</h1>
           <div class="accent-line"></div>
@@ -358,25 +437,7 @@
           </div>
         </section>
 
-        <!-- 5 AI -->
-        <section class="slide" data-title="AI &amp; Automation">
-          <span class="kicker">Innovation</span>
-          <h1>AI &amp; Automation</h1>
-          <div class="accent-line"></div>
-          <div class="split">
-            <div>
-              <p class="lead">Applying AI and automation across delivery and operations to remove manual effort and accelerate outcomes — without adding cost.</p>
-              <ul class="clean">
-                <li>Automation of repetitive resourcing and reporting workflows</li>
-                <li>AI-assisted delivery to improve speed and quality</li>
-                <li>Continuous efficiency gains across the engagement</li>
-              </ul>
-            </div>
-            <div class="callout" style="margin-top:6px"><div class="t">Incremental savings<span>Through AI &amp; automation</span></div><div class="n">$1M</div></div>
-          </div>
-        </section>
-
-        <!-- 6 VENDOR STREAMLINING -->
+        <!-- 5 VENDOR STREAMLINING -->
         <section class="slide" data-title="Vendor Streamlining">
           <span class="kicker">Opportunity</span>
           <h1>Vendor streamlining savings</h1>
@@ -386,8 +447,27 @@
           <p style="font-size:11.5px;color:var(--gray);margin-top:12px">*Assumes $85/hr average bill rate and current average mark-up factor of ~1.36. Days reflect transition milestones.</p>
         </section>
 
+        <!-- 6 AI -->
+        <section class="slide" data-title="AI &amp; Automation">
+          <span class="kicker">Innovation</span>
+          <h1>AI &amp; Automation</h1>
+          <div class="accent-line"></div>
+          <div class="split" style="grid-template-columns:1fr .95fr;align-items:center">
+            <div>
+              <p class="lead">Applying AI and automation across delivery and operations to remove manual effort and accelerate outcomes — without adding cost.</p>
+              <ul class="clean">
+                <li>Automation of repetitive resourcing and reporting workflows</li>
+                <li>AI-assisted delivery to improve speed and quality</li>
+                <li>Continuous efficiency gains across the engagement</li>
+              </ul>
+              <div class="callout" style="margin-top:20px"><div class="t">Incremental savings<span>Through AI &amp; automation</span></div><div class="n">$1M</div></div>
+            </div>
+            <div class="ai-wrap"><div class="ai-orb"><svg id="aiSvg" viewBox="0 0 400 400" aria-hidden="true"></svg></div></div>
+          </div>
+        </section>
+
         <!-- 7 TRANSITION BEST PRACTICES (person) -->
-        <section class="slide" data-title="Talent Transition">
+        <section class="slide peoplebg" data-title="Talent Transition">
           <span class="kicker">Ensuring a smooth program change</span>
           <h1>Talent transition best practices</h1>
           <div class="accent-line"></div>
@@ -444,30 +524,39 @@
           <span class="kicker">Implementation expertise</span>
           <h1>Nine proven workstreams</h1>
           <div class="accent-line"></div>
-          <p class="lead">A structured, proven, and repeatable implementation framework — driven by plans and timelines, led by a dedicated team of implementation professionals.</p>
-          <div class="ws-grid">
-            <div class="ws"><span class="no">01</span><span>Change Management</span></div>
-            <div class="ws"><span class="no">02</span><span>Discovery / Design</span></div>
-            <div class="ws"><span class="no">03</span><span>Assignment Transition</span></div>
-            <div class="ws"><span class="no">04</span><span>Program Management</span></div>
-            <div class="ws"><span class="no">05</span><span>Invoicing &amp; Settlement</span></div>
-            <div class="ws"><span class="no">06</span><span>Reporting &amp; Timekeeping</span></div>
-            <div class="ws"><span class="no">07</span><span>Training</span></div>
-            <div class="ws"><span class="no">08</span><span>Supplier Alignment</span></div>
-            <div class="ws"><span class="no">09</span><span>Governance</span></div>
+          <p class="lead">A structured, proven, repeatable framework — sequenced across three phases, each owned by dedicated implementation professionals.</p>
+          <div class="ws-phases">
+            <div class="ws-col">
+              <div class="phase"><span class="pn">1</span>Plan &amp; Design</div>
+              <div class="ws-card"><div class="wt"><span class="nn">01</span>Discovery / Design</div><div class="wd">Site visits, observations, and solution design up front.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">02</span>Change Management</div><div class="wd">Comms and adoption planning that limits disruption.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">03</span>Governance</div><div class="wd">Clear decision rights, cadences, and accountability.</div></div>
+            </div>
+            <div class="ws-col">
+              <div class="phase"><span class="pn">2</span>Transition</div>
+              <div class="ws-card"><div class="wt"><span class="nn">04</span>Assignment Transition</div><div class="wd">ASA-aligned worker transition with 99% retention.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">05</span>Supplier Alignment</div><div class="wd">Coordinated handoff with incumbent suppliers.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">06</span>Training</div><div class="wd">Onboarding and enablement for workers and managers.</div></div>
+            </div>
+            <div class="ws-col">
+              <div class="phase"><span class="pn">3</span>Run &amp; Settle</div>
+              <div class="ws-card"><div class="wt"><span class="nn">07</span>Program Management</div><div class="wd">Dedicated PMO driving plans, timelines, and risk.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">08</span>Reporting &amp; Timekeeping</div><div class="wd">Accurate timekeeping and transparent reporting.</div></div>
+              <div class="ws-card"><div class="wt"><span class="nn">09</span>Invoicing &amp; Settlement</div><div class="wd">Streamlined invoicing, settlement, and controls.</div></div>
+            </div>
           </div>
         </section>
 
         <!-- 10 DOWNLOADS (hero) -->
         <section class="slide hero" data-title="Downloads &amp; Contacts">
-          <video class="hero-bg" autoplay muted loop playsinline poster="assets/brand/glass-caps-poster.jpg"><source src="assets/brand/glass-caps.mp4" type="video/mp4"></video>
           <span class="kicker" style="color:#cfc9ff;background:rgba(255,255,255,.15)">Take it with you</span>
           <h1 style="font-size:42px">Documents &amp; next steps</h1>
           <div class="accent-line"></div>
           <div class="dl-grid">
-            <a class="dl" href="downloads/Kroger-Experis-One-Pager.pdf" target="_blank" download><span class="ft">PDF</span><h3>Executive One-Pager</h3><p>A single-page summary of the savings plan and key figures.</p><div class="go">Download →</div></a>
-            <a class="dl" href="downloads/Kroger-Experis-Value-Realization-Deck.pdf" target="_blank" download><span class="ft">PDF</span><h3>Full Value Realization Deck</h3><p>The complete presentation in PDF format.</p><div class="go">Download →</div></a>
+            <a class="dl" href="downloads/Kroger-Experis-Value-Realization-Deck.pdf" target="_blank" download><span class="ft">PDF</span><h3>Value Realization Deck</h3><p>A static PDF copy of this deck.</p><div class="go">Download →</div></a>
+            <a class="dl" href="downloads/Kroger-Experis-One-Pager.pdf" target="_blank" download><span class="ft">PDF</span><h3>Executive One-Pager</h3><p>A single-page summary of the savings plan.</p><div class="go">Download →</div></a>
             <a class="dl" href="downloads/Kroger-Experis-Savings-Model.xlsx" target="_blank" download><span class="ft">XLSX</span><h3>Savings Model</h3><p>Lever-by-lever breakdown with the vendor schedule.</p><div class="go">Download →</div></a>
+            <a class="dl" href="downloads/Experis-IT-Services-RFI.xlsx" target="_blank" download><span class="ft">XLSX</span><h3>IT Services RFI</h3><p>Experis RFI response workbook.</p><div class="go">Download →</div></a>
           </div>
           <div class="callout" style="margin-top:24px"><div class="t">Ready to realize the value?<span>Total identified opportunity — annualized</span></div><div class="n">Up to ~$16M+</div></div>
           <div class="contacts">
@@ -530,8 +619,9 @@
     document.getElementById('pn').textContent=i+1;
     document.getElementById('prev').disabled=(i===0);
     document.getElementById('next').disabled=(i===N-1);
+    document.getElementById('deck-bg').classList.toggle('show',!slides[i].classList.contains('hero'));
     slides[i].scrollTop=0;
-    if(i===6) drawBars();
+    if(slides[i].querySelector('#bars')) drawBars();
   }
   const sched=[[30,1.209],[60,2.418],[90,3.627],[120,4.836],[150,6.045],[180,7.254],[210,8.463],[240,9.672],[270,10.881],[310,12.493]];
   let barsDrawn=false;
@@ -550,6 +640,69 @@
     if(e.key==='ArrowRight'||e.key==='PageDown') go(cur+1);
     if(e.key==='ArrowLeft'||e.key==='PageUp') go(cur-1);
   });
+
+  /* ---- AI orb (Siri-style sphere of datapoints) ---- */
+  function buildOrb(){
+    const svg=document.getElementById('aiSvg'); if(!svg||svg.dataset.built) return; svg.dataset.built=1;
+    const NS="http://www.w3.org/2000/svg", cx=200, cy=200;
+    svg.innerHTML=`<defs>
+      <radialGradient id="coreg" cx="50%" cy="45%" r="55%">
+        <stop offset="0%" stop-color="#e9f4ff"/><stop offset="45%" stop-color="#56bded"/><stop offset="100%" stop-color="#5c4bb9"/>
+      </radialGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>`;
+    const colors=["#9e94fa","#736bde","#56bded","#3893cd","#bcb6ff"];
+    for(let w=0;w<2;w++){const c=document.createElementNS(NS,"circle");
+      c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r",60);c.setAttribute("fill","none");
+      c.setAttribute("stroke","#8f86f0");c.setAttribute("stroke-width","1.2");c.setAttribute("class","pwave");
+      c.style.animationDelay=(w*1.6)+"s";svg.appendChild(c);}
+    const core=document.createElementNS(NS,"circle");
+    core.setAttribute("cx",cx);core.setAttribute("cy",cy);core.setAttribute("r",24);
+    core.setAttribute("fill","url(#coreg)");core.setAttribute("class","core");core.setAttribute("filter","url(#glow)");svg.appendChild(core);
+    const rings=5, rx=162, ry=56;
+    for(let r=0;r<rings;r++){
+      const outer=document.createElementNS(NS,"g");
+      outer.setAttribute("transform",`rotate(${r*36} ${cx} ${cy})`);
+      const ring=document.createElementNS(NS,"g"); ring.setAttribute("class","ring");
+      ring.style.animationDuration=(9+r*2.3).toFixed(1)+"s"; if(r%2) ring.style.animationDirection="reverse";
+      const dots=18;
+      for(let i=0;i<dots;i++){
+        const a=(i/dots)*Math.PI*2, x=cx+rx*Math.cos(a), y=cy+ry*Math.sin(a);
+        const d=document.createElementNS(NS,"circle");
+        d.setAttribute("cx",x.toFixed(1));d.setAttribute("cy",y.toFixed(1));d.setAttribute("r",(1.6+Math.random()*2.2).toFixed(1));
+        d.setAttribute("fill",colors[(i+r)%colors.length]);d.setAttribute("class","dot");d.setAttribute("filter","url(#glow)");
+        d.style.animationDuration=(1.6+Math.random()*2.4).toFixed(2)+"s";d.style.animationDelay=(Math.random()*2).toFixed(2)+"s";
+        ring.appendChild(d);
+      }
+      outer.appendChild(ring);svg.appendChild(outer);
+    }
+    for(let i=0;i<14;i++){
+      const a=Math.random()*Math.PI*2, rr=46+Math.random()*150;
+      const d=document.createElementNS(NS,"circle");
+      d.setAttribute("cx",(cx+Math.cos(a)*rr).toFixed(1));d.setAttribute("cy",(cy+Math.sin(a)*rr*0.7).toFixed(1));
+      d.setAttribute("r",(0.8+Math.random()*1.6).toFixed(1));d.setAttribute("fill",colors[i%colors.length]);d.setAttribute("class","dot");
+      d.style.animationDuration=(1.4+Math.random()*2).toFixed(2)+"s";d.style.animationDelay=(Math.random()*2).toFixed(2)+"s";
+      svg.appendChild(d);
+    }
+  }
+  buildOrb();
+
+  /* ---- header actions ---- */
+  const docmenu=document.getElementById('docmenu');
+  document.getElementById('docsBtn').onclick=e=>{e.stopPropagation();docmenu.classList.toggle('open');};
+  docmenu.onclick=e=>e.stopPropagation();
+  document.addEventListener('click',()=>docmenu.classList.remove('open'));
+  document.getElementById('dlBtn').onclick=()=>{const a=document.createElement('a');
+    a.href='downloads/Kroger-Experis-Value-Realization-Deck.pdf';a.download='';document.body.appendChild(a);a.click();a.remove();};
+  function toast(msg){let t=document.getElementById('toast');
+    if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t);}
+    t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+  document.getElementById('shareBtn').onclick=async()=>{
+    const url=location.href;
+    try{if(navigator.share){await navigator.share({title:'Kroger Value Realization',url});return;}}catch(e){}
+    try{await navigator.clipboard.writeText(url);toast('Link copied to clipboard');}catch(e){toast(url);}
+  };
+
   go(0);
 </script>
 </body>
