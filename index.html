@@ -815,7 +815,7 @@
     setTimeout(()=>{const v=document.querySelector('#bg video'); if(v) v.pause();},900);
   }
   function tryEnter(){
-    if(pw.value.trim()===PASSWORD){unlock();}
+    if(pw.value.trim().toLowerCase()===PASSWORD.toLowerCase()){unlock();}
     else{err.classList.add('show');prompt.classList.add('shake');setTimeout(()=>prompt.classList.remove('shake'),400);}
   }
   document.getElementById('enterBtn').onclick=tryEnter;
