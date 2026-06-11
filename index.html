@@ -336,6 +336,10 @@
   .person{position:absolute;right:30px;bottom:0;height:86%;max-height:560px;pointer-events:none;filter:drop-shadow(0 20px 40px rgba(40,20,80,.25))}
 
   /* downloads */
+  .pdf-note{display:none;margin:4px 0 14px;padding:12px 18px;border-radius:12px;
+    background:rgba(17,0,255,.06);border:1px solid var(--line);font-size:12.5px;color:var(--gray);line-height:1.5}
+  .pdf-note b{color:var(--ink);font-weight:700}
+  body.is-file .pdf-note{display:block}
   .dl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:6px}
   .dl{display:block;text-decoration:none;border-radius:14px;padding:22px 20px;transition:.18s;color:inherit;
     background:#fff;border:1px solid var(--line);box-shadow:0 8px 22px rgba(60,40,120,.08)}
@@ -477,7 +481,6 @@
     <input id="pw" type="password" placeholder="Access code" autocomplete="off" spellcheck="false">
     <button class="enter" id="enterBtn">Enter</button>
     <div class="err" id="err">Incorrect code — try again.</div>
-    <button class="bypass" id="bypassBtn">Preview without code →</button>
   </div>
 </div>
 
@@ -661,7 +664,7 @@
           <h1>Vendor streamlining savings</h1>
           <div class="accent-line"></div>
           <div class="lever-mini">
-            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
+            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate Reduction</div></div></div>
             <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
             <div class="lm-card" onclick="go(8)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
             <div class="lm-card" onclick="go(9)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
@@ -697,7 +700,7 @@
           <h1>AI &amp; Automation</h1>
           <div class="accent-line"></div>
           <div class="lever-mini">
-            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
+            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate Reduction</div></div></div>
             <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
             <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
             <div class="lm-card" onclick="go(9)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
@@ -721,7 +724,7 @@
           <h1>Standardize Process &amp; Pricing</h1>
           <div class="accent-line"></div>
           <div class="lever-mini">
-            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
+            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate Reduction</div></div></div>
             <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
             <div class="lm-card" onclick="go(8)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
             <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
@@ -739,6 +742,7 @@
           <span class="kicker">Take it with you</span>
           <h1>Documents &amp; next steps</h1>
           <div class="accent-line"></div>
+          <div class="pdf-note"><b>Viewing the PDF copy?</b> These document links aren't clickable in the PDF. To download the files, visit the live site at <b>ryanlynchexp.github.io/kroger</b> and use the Downloads page there.</div>
           <div class="dl-grid">
             <a class="dl" data-prev="assets/previews/deck.jpg" href="downloads/Kroger-Experis-Value-Realization-Deck.pdf" target="_blank" download><span class="ft">PDF</span><h3>Value Realization Deck</h3><p>A static PDF copy of this deck.</p><div class="go">Download →</div></a>
             <a class="dl" data-prev="assets/previews/onepager.jpg" href="downloads/Kroger-Experis-One-Pager.pdf" target="_blank" download><span class="ft">PDF</span><h3>Executive One-Pager</h3><p>A single-page summary of the savings plan.</p><div class="go">Download →</div></a>
@@ -789,8 +793,10 @@
 </div>
 
 <script>
+  /* Show the PDF-only download notice when rendered from a local file (PDF export), not on the live https site. */
+  if(location.protocol==="file:")document.body.classList.add("is-file");
   /* ---- password gate ---- */
-  const PASSWORD="ChooseExperis!";
+  const PASSWORD="ExperisValue";
   const gate=document.getElementById('gate'), app=document.getElementById('app');
   const pw=document.getElementById('pw'), err=document.getElementById('err'), prompt=document.getElementById('prompt');
   let unlocked=false;
@@ -813,7 +819,6 @@
     else{err.classList.add('show');prompt.classList.add('shake');setTimeout(()=>prompt.classList.remove('shake'),400);}
   }
   document.getElementById('enterBtn').onclick=tryEnter;
-  document.getElementById('bypassBtn').onclick=unlock;   /* bypass for now — remove before final delivery Thursday */
   pw.addEventListener('keydown',e=>{if(e.key==='Enter')tryEnter(); else err.classList.remove('show');});
   setTimeout(()=>pw.focus(),900);
 
