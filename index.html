@@ -23,7 +23,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);
-    height:100vh;overflow:hidden;background:#1a1430}
+    height:100vh;overflow-x:auto;overflow-y:hidden;background:#1a1430}
   img{display:block}
 
   /* ---------- living background ---------- */
@@ -71,7 +71,7 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
   /* ---------- app ---------- */
-  .app{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column;background:transparent;
+  .app{position:relative;z-index:10;height:100vh;min-width:1180px;display:flex;flex-direction:column;background:transparent;
     transform:translateY(102%);opacity:0;transition:transform .95s cubic-bezier(.76,0,.24,1) .15s,opacity .6s ease .25s}
   .app--in{transform:none;opacity:1}
 
@@ -381,7 +381,9 @@
   .peoplebg .person{right:0;z-index:0;height:94%;max-height:620px;
     -webkit-mask-image:linear-gradient(to right,transparent 0,#000 30%,#000 100%);
     mask-image:linear-gradient(to right,transparent 0,#000 30%,#000 100%)}
-  .peoplebg .metrics,.peoplebg .grid,.peoplebg .split,.peoplebg .kicker,.peoplebg h1,.peoplebg .accent-line{position:relative;z-index:2}
+  .peoplebg .metrics,.peoplebg .grid,.peoplebg .split,.peoplebg .clean-grid,.peoplebg .kicker,.peoplebg h1,.peoplebg .accent-line{position:relative;z-index:2}
+  .peoplebg .clean-grid{background:rgba(255,255,255,.76);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);
+    border:1px solid rgba(120,110,200,.22);box-shadow:0 12px 30px rgba(60,40,120,.14);border-radius:14px;padding:6px 20px}
   .peoplebg .card,.peoplebg .metric{background:rgba(255,255,255,.76);backdrop-filter:blur(16px) saturate(150%);
     -webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(120,110,200,.22);box-shadow:0 12px 30px rgba(60,40,120,.14)}
 
@@ -454,11 +456,8 @@
 
   .index::-webkit-scrollbar,.slide::-webkit-scrollbar{width:8px}
   .index::-webkit-scrollbar-thumb,.slide::-webkit-scrollbar-thumb{background:rgba(150,150,190,.45);border-radius:4px}
-  @media(max-width:980px){
-    .index{display:none}.slide{padding:28px 24px}.slide.hero h1{font-size:38px}
-    .grid.c3,.grid.c4,.ws-grid,.dl-grid{grid-template-columns:1fr 1fr}.split,.aa,.steps-detail{grid-template-columns:1fr}
-    .callout{flex-direction:column;align-items:flex-start}.person{display:none}.tl-track{flex-wrap:wrap;gap:14px}.tl-step{flex:1 1 40%}
-  }
+  /* Layout is locked to a minimum width (.app min-width) so it never reflows/stacks.
+     On narrower viewports the deck scrolls horizontally instead of breaking. */
 </style>
 </head>
 <body>
@@ -520,7 +519,7 @@
             <p class="lead">A trusted IT resourcing and services partner for 10+ years. This plan shows how Experis delivers meaningful, near-term cost savings — while protecting delivery continuity and talent.</p>
             <div class="cta">
               <button class="btn primary" onclick="go(1)">Explore the plan →</button>
-              <button class="btn" onclick="go(10)">Jump to downloads</button>
+              <button class="btn" onclick="go(11)">Jump to downloads</button>
             </div>
           </div>
         </section>
@@ -563,7 +562,7 @@
           <div class="grid c3" style="margin-top:8px;max-width:620px">
             <div class="card"><div class="v">10 yrs</div><p>A decade-long relationship built on trust and delivery.</p></div>
             <div class="card"><div class="v">950+</div><p>Consultants deployed; 200+ became Kroger employees.</p></div>
-            <div class="card"><div class="v">60+</div><p>Projects across Merchandising, Associates, Product &amp; Marketing.</p></div>
+            <div class="card"><div class="v">60+</div><p>Projects delivered across KTD, Marketing &amp; Retail Operations.</p></div>
           </div>
           <div class="metrics" style="max-width:620px;margin-top:18px">
             <div class="metric"><div class="big">$32.3M</div><div class="lbl">2025 Spend</div></div>
@@ -601,9 +600,8 @@
             <div class="org-tier t4"><h4>Operations</h4><span>Process, Experience &amp; Compliance</span></div>
             <div class="org-row">
               <div class="pchip"><div class="av" style="background:#7d5be6">WF</div><div class="pn">Wendy Ferreira</div><div class="pr">Consultant Experience Mgr*</div></div>
-              <div class="pchip"><div class="av" style="background:#7d5be6"></div><div class="pn">Onboarding</div><div class="pr">People</div></div>
               <div class="pchip"><div class="av" style="background:#7d5be6">AF</div><div class="pn">Aubryn Falk</div><div class="pr">Invoicing</div></div>
-              <div class="pchip"><div class="av" style="background:#7d5be6"></div><div class="pn">Legal/Compliance</div><div class="pr">Contract</div></div>
+              <div class="pchip"><div class="av" style="background:#7d5be6">GS</div><div class="pn">Gregory Schrieber</div><div class="pr">Sr. Counsel · Legal/Compliance</div></div>
             </div>
           </div>
           <div class="org-note">*Dedicated to Kroger</div>
@@ -634,8 +632,8 @@
           <div class="lever-mini">
             <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
             <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
-            <div class="lm-card" onclick="go(7)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
-            <div class="lm-card" onclick="go(4)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
+            <div class="lm-card" onclick="go(8)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
+            <div class="lm-card" onclick="go(9)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
           </div>
           <p class="lead" style="margin:-4px 0 18px">Two contributors combine into the Cost Efficiency lever — $2.1M in Kroger fiscal 2026 ($3.1M annualized).</p>
           <div class="split">
@@ -663,40 +661,16 @@
           <div class="lever-mini">
             <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
             <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
-            <div class="lm-card" onclick="go(7)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
-            <div class="lm-card" onclick="go(4)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
+            <div class="lm-card" onclick="go(8)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
+            <div class="lm-card" onclick="go(9)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
           </div>
           <p class="lead">Annualized savings scale linearly — about <b style="color:var(--violet)">$23.1K for every consultant</b> transitioned to Experis.</p>
           <div class="pictos" id="pictos"></div>
           <p style="font-size:11.5px;color:var(--gray);margin-top:16px">*Estimated annualized savings; assumes $95/hr average bill rate and 20% mark-up. Savings scale linearly with consultants transitioned.</p>
         </section>
 
-        <!-- 6 AI -->
-        <section class="slide" data-title="AI &amp; Automation">
-          <h1>AI &amp; Automation</h1>
-          <div class="accent-line"></div>
-          <div class="lever-mini">
-            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
-            <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
-            <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
-            <div class="lm-card" onclick="go(4)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
-          </div>
-          <div class="split" style="grid-template-columns:1fr .95fr;align-items:center">
-            <div>
-              <p class="lead">Applying AI and automation across delivery and operations to remove manual effort and accelerate outcomes — without adding cost.</p>
-              <ul class="clean">
-                <li>Automation of repetitive resourcing and reporting workflows</li>
-                <li>AI-assisted delivery to improve speed and quality</li>
-                <li>Continuous efficiency gains across the engagement</li>
-              </ul>
-              <div class="callout" style="margin-top:20px"><div class="t">Targeted savings<span>Goalpost — AI &amp; automation</span></div><div class="n">~$1M</div></div>
-            </div>
-            <div class="ai-wrap"><div class="ai-orb"><canvas id="aiCanvas" width="720" height="720" aria-hidden="true"></canvas></div></div>
-          </div>
-        </section>
-
-        <!-- 7 TRANSITION BEST PRACTICES (person) -->
-        <section class="slide peoplebg" data-title="Standardized Processes">
+        <!-- VENDOR STREAMLINING (cont'd) — talent transition -->
+        <section class="slide peoplebg" data-title="Vendor Streamlining (cont'd)">
           <span class="kicker">Ensuring a smooth program change</span>
           <h1>Talent transition best practices</h1>
           <div class="accent-line"></div>
@@ -714,6 +688,49 @@
             <div class="ci">Provides options and a clear timeline</div>
           </div>
           <img class="person" src="assets/brand/person-b2c.png" alt="">
+        </section>
+
+        <!-- 6 AI -->
+        <section class="slide" data-title="AI &amp; Automation">
+          <h1>AI &amp; Automation</h1>
+          <div class="accent-line"></div>
+          <div class="lever-mini">
+            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
+            <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
+            <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
+            <div class="lm-card" onclick="go(9)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
+          </div>
+          <div class="split" style="grid-template-columns:1fr .95fr;align-items:center">
+            <div>
+              <p class="lead">Applying AI and automation across delivery and operations to remove manual effort and accelerate outcomes — without adding cost.</p>
+              <ul class="clean">
+                <li>Automation of repetitive resourcing and reporting workflows</li>
+                <li>AI-assisted delivery to improve speed and quality</li>
+                <li>Continuous efficiency gains across the engagement</li>
+              </ul>
+              <div class="callout" style="margin-top:20px"><div class="t">Targeted savings<span>Goalpost — AI &amp; automation</span></div><div class="n">~$1M</div></div>
+            </div>
+            <div class="ai-wrap"><div class="ai-orb"><canvas id="aiCanvas" width="720" height="720" aria-hidden="true"></canvas></div></div>
+          </div>
+        </section>
+
+        <!-- STANDARDIZE PROCESS & PRICING (lever detail) -->
+        <section class="slide" data-title="Standardized Processes">
+          <h1>Standardize Process &amp; Pricing</h1>
+          <div class="accent-line"></div>
+          <div class="lever-mini">
+            <div class="lm-card" onclick="go(5)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v13"/><path d="M7 12l5 5 5-5"/><path d="M5 21h14"/></svg></div><div><div class="lm-t">Cost Efficiency</div><div class="lm-v">10% Bill Rate</div></div></div>
+            <div class="lm-card" onclick="go(6)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4z"/></svg></div><div><div class="lm-t">Vendor Streamlining</div><div class="lm-v">$1–7M</div></div></div>
+            <div class="lm-card" onclick="go(8)"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.7 4.8L18.5 9.5l-4.8 1.7L12 16l-1.7-4.8L5.5 9.5l4.8-1.7z"/><path d="M18.5 14l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div><div class="lm-t">AI &amp; Automation</div><div class="lm-v">$1M target</div></div></div>
+            <div class="lm-card active"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg></div><div><div class="lm-t">Standardize Process &amp; Pricing</div><div class="lm-v">Rate Card</div></div></div>
+          </div>
+          <p class="lead">One Experis rate card and playbook — engineered for sustained, year-round value.</p>
+          <div class="grid c2" style="margin-top:18px">
+            <div class="card"><span class="tag">Rate card reduction</span><h3>10% cut to the existing rate card</h3><p>An across-the-board reduction applied to the current Experis rate card.</p></div>
+            <div class="card"><span class="tag">Modernized rate card</span><h3>Partnership-driven rate card refresh</h3><p>A refreshed SOW rate card that meets Kroger where they are, with room for continued partnership at scale.</p></div>
+            <div class="card"><span class="tag">Flexible delivery</span><h3>On-shore &amp; near-shore options</h3><p>An optimized delivery mix that balances cost, speed, and proximity.</p></div>
+            <div class="card"><span class="tag">Steady state</span><h3>Sustained YoY savings</h3><p>Standardized pricing compounds value through the rest of the year and beyond.</p></div>
+          </div>
         </section>
 
         <!-- WORKSTREAMS -->
